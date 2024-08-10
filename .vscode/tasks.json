@@ -84,6 +84,91 @@
                 "isDefault": false
             },
             "hide": true
+        },
+        {
+            "label": "make legacy",
+            "command": "make",
+            "args": [
+                
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build_legacy/"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "hide": false
+        },
+        {
+            "label": "emmake make release",
+            "command": "emmake",
+            "args": [
+                "make"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build_wasm/"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "dependsOn": [
+                "emcmake cmake init release"
+            ],
+            "hide": false
+        },
+        {
+            "label": "emmake make debug",
+            "command": "emmake",
+            "args": [
+                "make"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build_wasm/"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "dependsOn": [
+                "emcmake cmake init debug"
+            ],
+            "hide": false
+        },
+        {
+            "label": "emcmake cmake init release",
+            "command": "emcmake",
+            "args": [
+                "cmake",
+                "../",
+                "-DCMAKE_BUILD_TYPE=Release"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build_wasm/"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "hide": true
+        },
+        {
+            "label": "emcmake cmake init debug",
+            "command": "emcmake",
+            "args": [
+                "cmake",
+                "../",
+                "-DCMAKE_BUILD_TYPE=Debug"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build_wasm/"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "hide": true
         }
     ]
 }
