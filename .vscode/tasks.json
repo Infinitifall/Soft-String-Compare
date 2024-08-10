@@ -1,0 +1,89 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "cmake release",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "./"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build_native/"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "dependsOn": [
+                "cmake init release"
+            ],
+            "hide": false
+        },
+        {
+            "label": "cmake debug",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "./"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build_native/"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "cmake init debug"
+            ],
+            "hide": false
+        },
+        {
+            "label": "cmake init release",
+            "command": "cmake",
+            "args": [
+                "../",
+                "-DCMAKE_BUILD_TYPE=Release",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build_native/"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "hide": true
+        },{
+            "label": "cmake init debug",
+            "command": "cmake",
+            "args": [
+                "../",
+                "-DCMAKE_BUILD_TYPE=Debug",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build_native/"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "hide": true
+        },
+        {
+            "label": "make",
+            "command": "make",
+            "args": [
+                
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build_native/"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "hide": true
+        }
+    ]
+}
