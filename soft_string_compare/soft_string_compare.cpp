@@ -16,7 +16,7 @@
 #include "./soft_string_compare.hh"
 
 
-void ss_compare::print_substringmatrix(std::string s1, std::string s2, SubstringMatrix sm, std::ostream& printer) {
+void ss_compare::print_substringmatrix(const std::string& s1, const std::string& s2, const SubstringMatrix& sm, std::ostream& printer) {
 
     // print format specifiers
     const int width = 2;
@@ -53,7 +53,7 @@ void ss_compare::print_substringmatrix(std::string s1, std::string s2, Substring
 }
 
 
-void ss_compare::print_substringmatrix(std::string s1, std::string s2, ComparisonMatrix cm, std::ostream& printer) {
+void ss_compare::print_substringmatrix(const std::string& s1, const std::string& s2, const ComparisonMatrix& cm, std::ostream& printer) {
 
     // initialize SubstringMatrix
     std::size_t sm_x = 2 + s1.length();
@@ -76,15 +76,16 @@ void ss_compare::print_substringmatrix(std::string s1, std::string s2, Compariso
 }
 
 
-void ss_compare::print_substringtuples(std::string s1, std::string s2, std::vector<SubstringTuple> substrings, std::ostream& printer) {
+void ss_compare::print_substringtuples(const std::string& s1, const std::string& s2, const std::vector<SubstringTuple>& substrings, std::ostream& printer) {
 
+    auto substrings_copy = substrings;
     // sort SubstringTuples by rating
-    std::sort(substrings.begin(), substrings.end(), [](const auto a, const auto b) { return (std::get<2>(a) < std::get<2>(b)); });
+    std::sort(substrings_copy.begin(), substrings_copy.end(), [](const auto a, const auto b) { return (std::get<2>(a) < std::get<2>(b)); });
 
     // print first string
     printer << "1: " << s1 << "\n";
 
-    for (auto substr = substrings.rbegin(); substr != substrings.rend(); substr++) {
+    for (auto substr = substrings_copy.rbegin(); substr != substrings_copy.rend(); substr++) {
         auto st = *substr;
         auto s1_b1     = std::string(std::get<0>(st), '_');
         auto s1_substr = s1.substr(std::get<0>(st), std::get<2>(st));
@@ -94,7 +95,7 @@ void ss_compare::print_substringtuples(std::string s1, std::string s2, std::vect
         printer << "++ " << s1_b1 << s1_substr << s1_b2 << "\n";
     }
 
-    for (auto substr = substrings.begin(); substr != substrings.end(); substr++) {
+    for (auto substr = substrings_copy.begin(); substr != substrings_copy.end(); substr++) {
         auto st = *substr;
         auto s2_b1     = std::string(std::get<1>(st), '_');
         auto s2_substr = s2.substr(std::get<1>(st), std::get<2>(st));
@@ -109,7 +110,7 @@ void ss_compare::print_substringtuples(std::string s1, std::string s2, std::vect
 }
 
 
-ss_compare::ComparisonMatrix ss_compare::calculate_comparisonmatrix(std::string s1, std::string s2) {
+ss_compare::ComparisonMatrix ss_compare::calculate_comparisonmatrix(const std::string& s1, const std::string& s2) {
     
     // initialize ComparisonMatrix
     std::size_t cm_x = s1.length();
@@ -128,7 +129,7 @@ ss_compare::ComparisonMatrix ss_compare::calculate_comparisonmatrix(std::string 
 }
 
 
-ss_compare::SubstringMatrix ss_compare::calculate_substringmatrix(std::string s1, std::string s2, ComparisonMatrix cm) {
+ss_compare::SubstringMatrix ss_compare::calculate_substringmatrix(const std::string& s1, const std::string& s2, const ComparisonMatrix& cm) {
 
     // initialize SubstringMatrix
     std::size_t sm_x = 2 + s1.length();
@@ -161,7 +162,7 @@ ss_compare::SubstringMatrix ss_compare::calculate_substringmatrix(std::string s1
 }
 
 
-std::vector<ss_compare::SubstringTuple> ss_compare::calculate_substringtuples(std::string s1, std::string s2, SubstringMatrix sm, std::size_t minimum_length) {
+std::vector<ss_compare::SubstringTuple> ss_compare::calculate_substringtuples(const std::string& s1, const std::string& s2, const SubstringMatrix& sm, std::size_t minimum_length) {
 
     // initialize SubstringTuple vector
     std::size_t cs_x = s1.length();
@@ -186,7 +187,7 @@ std::vector<ss_compare::SubstringTuple> ss_compare::calculate_substringtuples(st
 }
 
 
-std::vector<std::string> ss_compare::words_in_string(std::string s, std::regex r) {
+std::vector<std::string> ss_compare::words_in_string(const std::string& s, std::regex r) {
     std::vector<std::string> words;
     
     auto words_begin = std::sregex_iterator(s.begin(), s.end(), r);
@@ -201,7 +202,7 @@ std::vector<std::string> ss_compare::words_in_string(std::string s, std::regex r
 }
 
 
-std::map<std::string, std::size_t> ss_compare::calculate_word_frequencies(std::vector<std::string> document){
+std::map<std::string, std::size_t> ss_compare::calculate_word_frequencies(const std::vector<std::string>& document){
     std::map<std::string, std::size_t> word_frequencies;
     
     for (auto line = document.begin(); line != document.end(); line++) {
@@ -227,7 +228,7 @@ std::map<std::string, std::size_t> ss_compare::calculate_word_frequencies(std::v
 }
 
 
-double ss_compare::rate_strings_1(std::string s1, std::string s2, std::vector<SubstringTuple> substrings, double weight) {
+double ss_compare::rate_strings_1(const std::string& s1, const std::string& s2, const std::vector<SubstringTuple>& substrings, double weight) {
     double rating = 0;
     
     for (std::size_t i = 0; i < substrings.size(); i++) {
@@ -250,7 +251,7 @@ double ss_compare::rate_strings_1(std::string s1, std::string s2, std::vector<Su
 }
 
 
-double ss_compare::rate_strings_2(std::string s1, std::string s2, std::map<std::string, std::size_t> word_frequencies) {
+double ss_compare::rate_strings_2(const std::string& s1, const std::string& s2, const std::map<std::string, std::size_t>& word_frequencies) {
     double total_rating = 0;
 
     auto s1_words = ss_compare::words_in_string(s1);
