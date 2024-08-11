@@ -302,7 +302,7 @@ void dummy_test() {
 
 void real_run_wrapper(int argc, char** argv) {
     if (argc != 5) {
-        std::cerr << "Usage: <program-name> <all_list_file> <input_list_file> <output_list_file> <0/1>\n";
+        std::cerr << "Usage: <program-name> <all_list_file> <input_list_file> <output_list_file> <dict_list_file>\n";
         return;
     }
 
