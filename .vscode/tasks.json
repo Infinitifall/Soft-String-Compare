@@ -44,28 +44,29 @@
             "command": "cmake",
             "args": [
                 "../",
-                "-DCMAKE_BUILD_TYPE=Release",
+                "-DCMAKE_BUILD_TYPE=Release"
             ],
             "options": {
                 "cwd": "${workspaceFolder}/build_native/"
             },
             "group": {
-                "kind": "build",
+                "kind": "none",
                 "isDefault": false
             },
             "hide": true
-        },{
+        },
+        {
             "label": "cmake init debug",
             "command": "cmake",
             "args": [
                 "../",
-                "-DCMAKE_BUILD_TYPE=Debug",
+                "-DCMAKE_BUILD_TYPE=Debug"
             ],
             "options": {
                 "cwd": "${workspaceFolder}/build_native/"
             },
             "group": {
-                "kind": "build",
+                "kind": "none",
                 "isDefault": false
             },
             "hide": true
@@ -73,9 +74,7 @@
         {
             "label": "make",
             "command": "make",
-            "args": [
-                
-            ],
+            "args": [],
             "options": {
                 "cwd": "${workspaceFolder}/build_native/"
             },
@@ -88,9 +87,7 @@
         {
             "label": "make legacy",
             "command": "make",
-            "args": [
-                
-            ],
+            "args": [],
             "options": {
                 "cwd": "${workspaceFolder}/build_legacy/"
             },
@@ -148,7 +145,7 @@
                 "cwd": "${workspaceFolder}/build_wasm/"
             },
             "group": {
-                "kind": "build",
+                "kind": "none",
                 "isDefault": false
             },
             "hide": true
@@ -165,7 +162,7 @@
                 "cwd": "${workspaceFolder}/build_wasm/"
             },
             "group": {
-                "kind": "build",
+                "kind": "none",
                 "isDefault": false
             },
             "hide": true
