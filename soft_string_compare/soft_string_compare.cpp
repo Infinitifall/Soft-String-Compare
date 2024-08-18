@@ -241,7 +241,7 @@ double ss_compare::rate_strings_1(const std::string& s1, const std::string& s2, 
 
         // bias towards same length matches
         double len_factor = 1;
-        len_factor = std::max(
+        len_factor = std::min(
             (double) (s1.length()) - s1_substr.length(),
             (double) (s2.length()) - s1_substr.length()
         );
