@@ -8,6 +8,10 @@
 #include <map>
 #include <regex>
 
+// #include <boost/regex.hpp>
+// namespace regex_lib = boost;
+namespace regex_lib = std;
+
 
 namespace ss_compare {
 
@@ -50,7 +54,11 @@ namespace ss_compare {
      * m = s1.length()
      * n = s2.length()
      */
-    void print_substringmatrix(const std::string& s1, const std::string& s2, const SubstringMatrix& sm, std::ostream& printer = std::cout);
+    void print_substringmatrix(
+        const std::string& s1, const std::string& s2,
+        const SubstringMatrix& sm,
+        std::ostream& printer = std::cout
+    );
 
 
     /**
@@ -61,7 +69,11 @@ namespace ss_compare {
      * m = s1.length()
      * n = s2.length()
      */
-    void print_substringmatrix(const std::string& s1, const std::string& s2, const ComparisonMatrix& cm, std::ostream& printer = std::cout);
+    void print_substringmatrix(
+        const std::string& s1, const std::string& s2,
+        const ComparisonMatrix& cm,
+        std::ostream& printer = std::cout
+    );
 
 
     /**
@@ -71,7 +83,11 @@ namespace ss_compare {
      * Space complexity = O(s)
      * s = substrings.size()
      */
-    void print_substringtuples(const std::string& s1, const std::string& s2, const std::vector<SubstringTuple>& substrings, std::ostream& printer = std::cout);
+    void print_substringtuples(
+        const std::string& s1, const std::string& s2,
+        const std::vector<SubstringTuple>& substrings,
+        std::ostream& printer = std::cout
+    );
 
 
     /**
@@ -83,7 +99,9 @@ namespace ss_compare {
      * m = s1.length()
      * n = s2.length()
      */
-    ComparisonMatrix calculate_comparisonmatrix(const std::string& s1, const std::string& s2);
+    ComparisonMatrix calculate_comparisonmatrix(
+        const std::string& s1, const std::string& s2
+    );
 
 
     /**
@@ -96,7 +114,10 @@ namespace ss_compare {
      * m = s1.length()
      * n = s2.length()
      */
-    SubstringMatrix calculate_substringmatrix(const std::string& s1, const std::string& s2, const ComparisonMatrix& cm);
+    SubstringMatrix calculate_substringmatrix(
+        const std::string& s1, const std::string& s2,
+        const ComparisonMatrix& cm
+    );
 
 
     /**
@@ -107,7 +128,11 @@ namespace ss_compare {
      * m = s1.length()
      * n = s2.length()
      */
-    std::vector<SubstringTuple> calculate_substringtuples(const std::string& s1, const std::string& s2, const SubstringMatrix& sm, std::size_t minimum_length = 2);
+    std::vector<SubstringTuple> calculate_substringtuples(
+        const std::string& s1, const std::string& s2,
+        const SubstringMatrix& sm,
+        std::size_t minimum_length = 2
+    );
 
 
     /**
@@ -118,7 +143,10 @@ namespace ss_compare {
      * Space complexity = O(n)
      * n = s.length()
      */
-    std::vector<std::string> words_in_string(const std::string& s, const std::regex r = std::regex("[\\w\\d]+", std::regex_constants::ECMAScript));
+    std::vector<std::string> words_in_string(
+        const std::string& s,
+        const regex_lib::regex& r = regex_lib::regex("[\\w\\d]+")
+    );
 
 
     /**
@@ -134,7 +162,11 @@ namespace ss_compare {
      * Space complexity = O(s)
      * s = substrings.size()
      */
-    double rate_strings_1(const std::string& s1, const std::string& s2, const std::vector<SubstringTuple>& substrings, double weight_power = 2.5);
+    double rate_strings_1(
+        const std::string& s1, const std::string& s2,
+        const std::vector<SubstringTuple>& substrings,
+        double weight_power = 2.5
+    );
 
 
     /**
@@ -145,7 +177,10 @@ namespace ss_compare {
      * m = s1.length()
      * n = s2.length()
      */
-    double rate_strings_2(const std::string& s1, const std::string& s2, const std::map<std::string, std::size_t>& word_frequencies);
+    double rate_strings_2(
+        const std::string& s1, const std::string& s2,
+        const std::map<std::string, std::size_t>& word_frequencies
+    );
 }
 
 #endif

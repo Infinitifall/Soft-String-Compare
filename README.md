@@ -109,7 +109,7 @@ cd build_native
 
 We see it is able to match severely misspelled product names to a very high degree (`>90%`).
 
-We can also enter arbitrary strings to see how the system ranks items. For example, if we try to see why `lumin ultra-comfortble coper-infusd matres` wasn't correctly matched:
+We can also enter arbitrary strings to see how the system ranks items. For example, to see why `lumin ultra-comfortble coper-infusd matres` wasn't correctly matched:
 
 ```
 Enter name: lumin ultra-comfortble coper-infusd matres
@@ -165,18 +165,18 @@ cmake --build ./
 time ./example ../data_dummy/all_list.txt ../data_dummy/input_list.txt ../data_dummy/output_list.txt ../data_dummy/all_list.txt
 ```
 
-```
-real    0m0.095s
-user    0m0.090s
-sys     0m0.006s
+```bash
+real    0m0.054s
+user    0m0.054s
+sys     0m0.000s
 ```
 
-On a Dell XPS 15 (9510, 2021) equivalent. This includes the time taken to read and write files.
+To correct 50 product names on a Dell XPS 15 (9510, 2021) equivalent.
 
 
 ## Compile to WebAssembly
 
-You need `Emscripten` and `node`+`npm`/`npx` (or a local development server) installed.
+You need a Wasm compiler (like `Emscripten`) and a local development server (such as `http-server`)
 
 ```bash
 # make
@@ -185,8 +185,9 @@ emcmake cmake ../ -DCMAKE_BUILD_TYPE=Release
 # emcmake cmake ../ -DCMAKE_BUILD_TYPE=Debug
 emmake make
 
+
 # run a local development server
-npx http-server /path/to/project -o -p 9999
+npx http-server ./ -o -p 9999
 # visit http://localhost:9999 in your web browser
 ```
 
