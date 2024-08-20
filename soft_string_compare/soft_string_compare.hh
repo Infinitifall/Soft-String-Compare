@@ -52,10 +52,11 @@ namespace ss_compare {
         WordFrequencies;
 
     typedef std::map<
-                std::string,            // the string
-                std::vector<
-                    std::string>>       // the words in the string
-        WordsCache;
+                std::tuple<            // the strings being compared
+                    std::string,        // the first string
+                    std::string>,       // the second string
+                double>                 // the rating
+        RatingCache;
 
 
     /**
@@ -213,7 +214,7 @@ namespace ss_compare {
     double rate_strings_2(
         const std::string& s1, const std::string& s2,
         const WordFrequencies& word_frequencies,
-        WordsCache& words_cache
+        RatingCache& rating_cache, bool enable_rating_cache=false
     );
 }
 

@@ -243,13 +243,13 @@ void write_document(std::vector<std::string> document, std::string file_name) {
 }
 
 
-std::vector<std::tuple<std::size_t, double>> get_all_ratings_1(const std::string& s1, const std::vector<std::string>& all_list, const ss_compare::WordFrequencies& word_frequencies, ss_compare::WordsCache words_cache) {
+std::vector<std::tuple<std::size_t, double>> get_all_ratings_1(const std::string& s1, const std::vector<std::string>& all_list, const ss_compare::WordFrequencies& word_frequencies, ss_compare::RatingCache& rating_cache) {
     std::vector<std::tuple<std::size_t, double>> ratings_list;
 
     // rate against each string
     for (std::size_t j = 0; j < all_list.size(); j++) {
         auto s2 = all_list[j];
-        auto rating = ss_compare::rate_strings_2(s1, s2, word_frequencies, words_cache);
+        auto rating = ss_compare::rate_strings_2(s1, s2, word_frequencies, rating_cache);
         std::tuple<std::size_t, double> temp_tuple {j, rating};
         ratings_list.push_back(temp_tuple);
     }
@@ -273,14 +273,14 @@ void real_run(const std::string& all_list_file, const std::string& input_list_fi
     // get word frequencies
     auto word_frequencies = ss_compare::calculate_word_frequencies(dict_list);
 
-    // initialize words cache
-    auto words_cache = ss_compare::WordsCache ();
+    // initialize rating cache
+    auto rating_cache = ss_compare::RatingCache ();
 
     for (std::size_t i = 0; i < input_list.size(); i++) {
         auto s1 = input_list[i];
 
         // get all ratings
-        auto ratings_list = get_all_ratings_1(s1, all_list, word_frequencies, words_cache);
+        auto ratings_list = get_all_ratings_1(s1, all_list, word_frequencies, rating_cache);
 
         if (ratings_list.size() == 0) {
             continue;
@@ -312,8 +312,8 @@ void user_input_test() {
     // get word frequencies
     auto word_frequencies = ss_compare::calculate_word_frequencies(all_list);
 
-    // initialize words cache
-    auto words_cache = ss_compare::WordsCache ();
+    // initialize rating cache
+    auto rating_cache = ss_compare::RatingCache ();
 
     while(true) {
         // accept string from user
@@ -332,7 +332,7 @@ void user_input_test() {
         }
 
         // get all ratings
-        auto ratings_list = get_all_ratings_1(s1, all_list, word_frequencies, words_cache);
+        auto ratings_list = get_all_ratings_1(s1, all_list, word_frequencies, rating_cache);
 
         // print ratings
         for (std::size_t k = 0; k < ratings_list.size(); k++) {
@@ -373,8 +373,8 @@ void dummy_test() {
     // get word frequencies
     auto word_frequencies = ss_compare::calculate_word_frequencies(all_list);
 
-    // initialize words cache
-    auto words_cache = ss_compare::WordsCache ();
+    // initialize rating cache
+    auto rating_cache = ss_compare::RatingCache ();
 
     // keep track of matches
     int correct_matches = 0, unknown_matches = 0, no_matches = 0;
@@ -383,7 +383,7 @@ void dummy_test() {
         auto s1_correct = correct_list[i];
 
         // get all ratings
-        auto ratings_list = get_all_ratings_1(s1, all_list, word_frequencies, words_cache);
+        auto ratings_list = get_all_ratings_1(s1, all_list, word_frequencies, rating_cache);
 
         if (ratings_list.size() == 0) {
             continue;
@@ -438,9 +438,9 @@ void real_run_wrapper(int argc, char** argv) {
 
 int main(int argc, char** argv) {
 
-    dummy_test();  // Runs test on dummy data
-    user_input_test();  // Finds match for user inputs
-    // real_run_wrapper(argc, argv);
+    // dummy_test();  // Runs test on dummy data
+    // user_input_test();  // Finds match for user inputs
+    real_run_wrapper(argc, argv);
 
     return 0;
 }

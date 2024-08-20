@@ -24,7 +24,7 @@ namespace regex_lib = std;
 void ss_compare::print_substringmatrix(const std::string& s1, const std::string& s2, const SubstringMatrix& sm, std::ostream& printer) {
 
     // print format specifiers
-    const int width = 2;
+    const int width = 1;
 
     std::size_t sm_x = 1 + s1.length();
     std::size_t sm_y = 1 + s2.length();
@@ -32,7 +32,7 @@ void ss_compare::print_substringmatrix(const std::string& s1, const std::string&
         for (std::size_t j = 0; j < sm_y; j++) {
             std::string ps;
             if ((i == 0) && (j == 0)) {
-                ps.assign(std::string (" ", width));
+                ps.assign(std::string(" ", width));
 
             } else if ((i > 0) && (j == 0)) {
                 ps = s1[i - 1];
@@ -45,7 +45,7 @@ void ss_compare::print_substringmatrix(const std::string& s1, const std::string&
                     ps = std::to_string(sm[i][j]);
 
                 } else {
-                    ps.assign(std::string (" ", width));
+                    ps.assign(std::string(" ", width));
                 }
             }
 
@@ -292,32 +292,19 @@ double ss_compare::rate_strings_1(const std::string& s1, const std::string& s2, 
 }
 
 
-double ss_compare::rate_strings_2(const std::string& s1, const std::string& s2, const WordFrequencies& word_frequencies, WordsCache& words_cache) {
+double ss_compare::rate_strings_2(const std::string& s1, const std::string& s2, const WordFrequencies& word_frequencies, RatingCache& rating_cache, bool enable_rating_cache) {
     double total_rating = 0;
 
-    // search for words in cache
-    // if not found, calculate and add to cache
-    std::vector<std::string> s1_words {};
-    auto it1 = words_cache.find(s1);
-    if (it1 != words_cache.end()) {
-        s1_words = it1->second;
-    } else {
-        s1_words = ss_compare::words_in_string_manual(s1);
-        words_cache.insert({s1, s1_words});
+    if (enable_rating_cache) {
+        // search for complete string comparison in cache
+        auto it_rating = rating_cache.find({s1, s2});
+        if (it_rating != rating_cache.end()) {
+            return it_rating->second;
+        }
     }
 
-    std::vector<std::string> s2_words {};
-    auto it2 = words_cache.find(s2);
-    if (it2 != words_cache.end()) {
-        s2_words = it2->second;
-    } else {
-        s2_words = ss_compare::words_in_string_manual(s2);
-        words_cache.insert({s2, s2_words});
-    }
-
-    // without caching
-    // auto s1_words = ss_compare::words_in_string_manual(s1);
-    // auto s2_words = ss_compare::words_in_string_manual(s2);
+    auto s1_words = ss_compare::words_in_string_manual(s1);
+    auto s2_words = ss_compare::words_in_string_manual(s2);
 
     for (std::size_t i = 0; i < s1_words.size(); i++) {
         auto s1_word = s1_words[i];
@@ -331,6 +318,15 @@ double ss_compare::rate_strings_2(const std::string& s1, const std::string& s2, 
 
         for (std::size_t j = 0; j < s2_words.size(); j++) {
             auto s2_word = s2_words[j];
+
+            if (enable_rating_cache) {
+                // search for word comparison in cache
+                auto it_rating = rating_cache.find({s1_word, s2_word});
+                if (it_rating != rating_cache.end()) {
+                    total_rating += it_rating->second;
+                    continue;
+                }
+            }
 
             // try to get s2_word frequency
             std::size_t s2_word_frequency = 1;
@@ -358,7 +354,18 @@ double ss_compare::rate_strings_2(const std::string& s1, const std::string& s2, 
 
             double rating_increment = (rating - floor_factor) * len_factor * freq_factor;
             total_rating += rating_increment;
+
+            if (enable_rating_cache) {
+                // add to cache
+                rating_cache.insert({{s1_word, s2_word}, rating_increment});
+            }
+            
         }
+    }
+
+    if (enable_rating_cache) {
+        // add to cache
+        rating_cache.insert({{s1, s2}, total_rating});
     }
 
     return total_rating;
