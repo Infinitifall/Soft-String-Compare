@@ -7,6 +7,7 @@
 #include <cmath>
 #include <string>
 #include <tuple>
+#include <set>
 #include <vector>
 #include <map>
 #include <algorithm>
@@ -31,7 +32,7 @@ void ss_compare::print_substringmatrix(const std::string& s1, const std::string&
         for (std::size_t j = 0; j < sm_y; j++) {
             std::string ps;
             if ((i == 0) && (j == 0)) {
-                ps.assign(std::string(" ", width));
+                ps.assign(std::string (" ", width));
 
             } else if ((i > 0) && (j == 0)) {
                 ps = s1[i - 1];
@@ -44,7 +45,7 @@ void ss_compare::print_substringmatrix(const std::string& s1, const std::string&
                     ps = std::to_string(sm[i][j]);
 
                 } else {
-                    ps.assign(std::string(" ", width));
+                    ps.assign(std::string (" ", width));
                 }
             }
 
@@ -119,7 +120,7 @@ ss_compare::ComparisonMatrix ss_compare::calculate_comparisonmatrix(const std::s
     // initialize ComparisonMatrix
     std::size_t cm_x = s1.length();
     std::size_t cm_y = s2.length();
-    std::vector<std::vector<bool>> cm{cm_x, std::vector<bool>(cm_y)};
+    std::vector<std::vector<bool>> cm {cm_x, std::vector<bool>(cm_y)};
 
     // compare strings one byte at a time
     // this will handle UTF-8, but rather crudely
@@ -166,7 +167,7 @@ ss_compare::SubstringMatrix ss_compare::calculate_substringmatrix(const std::str
 }
 
 
-std::vector<ss_compare::SubstringTuple> ss_compare::calculate_substringtuples(const std::string& s1, const std::string& s2, const SubstringMatrix& sm, std::size_t minimum_length) {
+std::vector<ss_compare::SubstringTuple> ss_compare::calculate_substringtuples(const std::string& s1, const std::string& s2, const SubstringMatrix& sm, const std::size_t minimum_length) {
 
     // initialize SubstringTuple vector
     std::size_t cs_x = s1.length();
@@ -180,7 +181,7 @@ std::vector<ss_compare::SubstringTuple> ss_compare::calculate_substringtuples(co
                 // add SubstringTuple to vector
                 auto substring_length = sm[i - 1][j - 1];
                 if (substring_length > minimum_length) {
-                    SubstringTuple st{i - 1 - substring_length, j - 1 - substring_length, substring_length};
+                    SubstringTuple st {i - 1 - substring_length, j - 1 - substring_length, substring_length};
                     cs.push_back(st);
                 }
             }
@@ -206,13 +207,49 @@ std::vector<std::string> ss_compare::words_in_string(const std::string& s, const
 }
 
 
+std::vector<std::string> ss_compare::words_in_string_manual(const std::string& s, const std::set<char>& word_breaks) {
+    std::vector<std::string> words;
+
+    bool curr_word_active = false;
+    std::size_t curr_word_start = 0;
+    for (std::size_t i = 0; i < s.length(); i++) {
+        if (word_breaks.count(s[i]) == 0) {
+            // a word either begins or continues
+            if (curr_word_active) {
+                // a word continues
+                // do nothing
+            } else {
+                // a word begins
+                curr_word_active = true;
+                curr_word_start = i;
+            }
+
+        } else {
+            // a word might have just ended
+            if (curr_word_active) {
+                // a word has just ended
+                words.push_back(s.substr(curr_word_start, i - curr_word_start));
+                curr_word_active = false;
+            }
+        }
+    }
+
+    // check if the string ends with a word
+    if (curr_word_active) {
+        words.push_back(s.substr(curr_word_start, s.length() - curr_word_start));
+    }
+
+    return words;
+}
+
+
 std::map<std::string, std::size_t> ss_compare::calculate_word_frequencies(const std::vector<std::string>& document){
     std::map<std::string, std::size_t> word_frequencies;
 
     for (auto line = document.begin(); line != document.end(); line++) {
         auto s = *line;
 
-        auto words = words_in_string(s);
+        auto words = words_in_string_manual(s);
         for (std::size_t i = 0; i < words.size(); i++) {
             auto word = words[i];
 
@@ -232,7 +269,7 @@ std::map<std::string, std::size_t> ss_compare::calculate_word_frequencies(const 
 }
 
 
-double ss_compare::rate_strings_1(const std::string& s1, const std::string& s2, const std::vector<SubstringTuple>& substrings, double weight_power) {
+double ss_compare::rate_strings_1(const std::string& s1, const std::string& s2, const std::vector<SubstringTuple>& substrings, const double weight_power) {
     double rating = 0;
 
     for (std::size_t i = 0; i < substrings.size(); i++) {
@@ -255,11 +292,33 @@ double ss_compare::rate_strings_1(const std::string& s1, const std::string& s2, 
 }
 
 
-double ss_compare::rate_strings_2(const std::string& s1, const std::string& s2, const std::map<std::string, std::size_t>& word_frequencies) {
+double ss_compare::rate_strings_2(const std::string& s1, const std::string& s2, const WordFrequencies& word_frequencies, WordsCache& words_cache) {
     double total_rating = 0;
 
-    auto s1_words = ss_compare::words_in_string(s1);
-    auto s2_words = ss_compare::words_in_string(s2);
+    // search for words in cache
+    // if not found, calculate and add to cache
+    std::vector<std::string> s1_words {};
+    auto it1 = words_cache.find(s1);
+    if (it1 != words_cache.end()) {
+        s1_words = it1->second;
+    } else {
+        s1_words = ss_compare::words_in_string_manual(s1);
+        words_cache.insert({s1, s1_words});
+    }
+
+    std::vector<std::string> s2_words {};
+    auto it2 = words_cache.find(s2);
+    if (it2 != words_cache.end()) {
+        s2_words = it2->second;
+    } else {
+        s2_words = ss_compare::words_in_string_manual(s2);
+        words_cache.insert({s2, s2_words});
+    }
+
+    // without caching
+    // auto s1_words = ss_compare::words_in_string_manual(s1);
+    // auto s2_words = ss_compare::words_in_string_manual(s2);
+
     for (std::size_t i = 0; i < s1_words.size(); i++) {
         auto s1_word = s1_words[i];
 

@@ -166,9 +166,9 @@ time ./example ../data_dummy/all_list.txt ../data_dummy/input_list.txt ../data_d
 ```
 
 ```bash
-real    0m0.054s
-user    0m0.054s
-sys     0m0.000s
+real    0m0.059s
+user    0m0.052s
+sys     0m0.003s
 ```
 
 To correct 50 product names on a Dell XPS 15 (9510, 2021) equivalent.

@@ -5,6 +5,7 @@
 #include <string>
 #include <tuple>
 #include <vector>
+#include <set>
 #include <map>
 #include <regex>
 
@@ -44,6 +45,17 @@ namespace ss_compare {
                 std::size_t,
                 bool>
         SoftSubstringTuple;
+
+    typedef std::map<
+                std::string,            // the word
+                std::size_t>            // the frequency of the word
+        WordFrequencies;
+
+    typedef std::map<
+                std::string,            // the string
+                std::vector<
+                    std::string>>       // the words in the string
+        WordsCache;
 
 
     /**
@@ -131,10 +143,11 @@ namespace ss_compare {
     std::vector<SubstringTuple> calculate_substringtuples(
         const std::string& s1, const std::string& s2,
         const SubstringMatrix& sm,
-        std::size_t minimum_length = 2
+        const std::size_t minimum_length = 2
     );
 
 
+    const regex_lib::regex r_default ("[\\w\\d]+");  // faster performance
     /**
      * Return words in a string
      * Word is defined by a regular expression
@@ -145,14 +158,34 @@ namespace ss_compare {
      */
     std::vector<std::string> words_in_string(
         const std::string& s,
-        const regex_lib::regex& r = regex_lib::regex("[\\w\\d]+")
+        const regex_lib::regex& r = r_default
+    );
+
+
+    const std::set<char> word_breaks_default = std::set<char> {
+        ' ', '-', '.', ',',
+        '/', '\\', ':',
+        '(', ')', '[', ']'
+    };  // faster performance
+    /**
+     * Return words in a string
+     * Word is defined by word break characters
+     * Uses manual method of string traversal
+     *
+     * Time complexity = O(n)
+     * Space complexity = O(n)
+     * n = s.length()
+     */
+    std::vector<std::string> words_in_string_manual(
+        const std::string& s,
+        const std::set<char>& word_breaks = word_breaks_default
     );
 
 
     /**
      * Calculate frequency words in document
      */
-    std::map<std::string, std::size_t> calculate_word_frequencies(const std::vector<std::string>& document);
+    WordFrequencies calculate_word_frequencies(const std::vector<std::string>& document);
 
 
     /**
@@ -165,7 +198,7 @@ namespace ss_compare {
     double rate_strings_1(
         const std::string& s1, const std::string& s2,
         const std::vector<SubstringTuple>& substrings,
-        double weight_power = 2.5
+        const double weight_power = 2.5
     );
 
 
@@ -179,7 +212,8 @@ namespace ss_compare {
      */
     double rate_strings_2(
         const std::string& s1, const std::string& s2,
-        const std::map<std::string, std::size_t>& word_frequencies
+        const WordFrequencies& word_frequencies,
+        WordsCache& words_cache
     );
 }
 
