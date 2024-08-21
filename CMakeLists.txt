@@ -28,6 +28,6 @@ add_executable(example example.cpp soft_string_compare/soft_string_compare.cpp)
 
 # Emscripten-specific settings
 if(EMSCRIPTEN)
-  set(CMAKE_EXECUTABLE_SUFFIX ".js")
-  set_target_properties(example PROPERTIES LINK_FLAGS "-s WASM=1 -s NO_EXIT_RUNTIME -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap'] -s ALLOW_MEMORY_GROWTH=1 -s MODULARIZE=1 --shell-file /usr/lib/emscripten/src/shell_minimal.html")
+  set(CMAKE_EXECUTABLE_SUFFIX ".html")
+  set_target_properties(example PROPERTIES LINK_FLAGS "-s WASM=1 -s NO_EXIT_RUNTIME -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap'] --shell-file /usr/lib/emscripten/src/shell_minimal.html")
 endif()
